@@ -62,6 +62,7 @@ export const constantRoutes = [
         path: '/profile',
         component: () => import('@/views/profile/index.vue'),
         name: 'profile',
+        hidden: true,
         meta: { title: '个人中心', icon: 'gg:profile' },
       },
     ],
@@ -84,7 +85,7 @@ const router = createRouter({
 })
 
 export function resetRouter() {
-  router.getRoutes().forEach(r => router.removeRoute(r))
+  router.getRoutes().forEach(r => router.hasRoute(r) && router.removeRoute(r))
   constantRoutes.forEach(r => router.addRoute(r))
   return router
 }

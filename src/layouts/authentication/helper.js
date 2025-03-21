@@ -5,6 +5,9 @@ export const resolve = (path, base) => new URL(path, `http://eq.com${base}`).pat
 // 只处理到二级菜单
 export function flatMapRoute(routes, parent) {
   return routes.flatMap(route => {
+    if (route.hidden) {
+      return []
+    }
     if (!isEmpty(route.meta)) {
       const { meta } = route
       return [

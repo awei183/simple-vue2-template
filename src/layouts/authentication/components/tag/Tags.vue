@@ -21,7 +21,7 @@
 
 <script>
 import { ElTabs, ElTabPane, ElIcon } from 'element-plus'
-import { initTags4LS, storeTags4LS } from '@/layouts/authentication'
+import { storeTags4LS } from '@/layouts/authentication'
 import { toRaw } from 'vue'
 import { isEmpty, keyBy } from 'lodash-es'
 import { Calendar } from '@element-plus/icons-vue'
@@ -50,7 +50,6 @@ export default {
       const record = keyBy(data, 'path')
       delete record[paneName]
       const tags = Object.values(record)
-      storeTags4LS(tags)
       this.tags = tags
 
       const current = this.$route.path
@@ -76,7 +75,7 @@ export default {
           return
         }
         const tags = [...Object.values(record), { path, title: meta.title, icon: meta.icon }]
-        storeTags4LS(tags)
+
         this.tags = tags
       }
     },
@@ -92,6 +91,11 @@ export default {
   margin-bottom: var(--custom-main-padding);
   :deep(.el-tabs__header) {
     margin: 0;
+  }
+  :deep(.el-tabs__item.is-active) {
+    border-bottom-width: 2px;
+    border-bottom-color: var(--el-color-primary);
+    background-color: white;
   }
 }
 .custom-tabs-label {

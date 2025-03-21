@@ -5,10 +5,10 @@
         <Illustration />
       </div>
       <div class="form_container">
-        <h1 class="title">离校毕业生离校业务办理</h1>
+        <h1 class="title">{{ title }}</h1>
         <el-form ref="formRef" class="login_form" label-width="auto" :rules="rules" :model="form">
-          <el-form-item label="用户名" prop="userName">
-            <el-input placeholder="请输入用户名" v-model="form.userName">
+          <el-form-item label="用户名" prop="username">
+            <el-input placeholder="请输入用户名" v-model="form.username">
               <template #prefix>
                 <el-icon><User /></el-icon>
               </template>
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import defaultSettings from '@/settings'
 import { User, Lock } from '@element-plus/icons-vue'
 import { toRaw } from 'vue'
 import Illustration from '@/assets/illustration.svg?component'
@@ -43,14 +44,15 @@ export default {
   data: () => {
     return {
       rules: {
-        userName: [{ required: true, message: '请输入用户名' }],
+        username: [{ required: true, message: '请输入用户名' }],
         password: [{ required: true, message: '请输入密码' }],
       },
       form: {
-        userName: '',
+        username: '',
         password: '',
       },
       loading: false,
+      title: defaultSettings.title,
     }
   },
   methods: {
@@ -65,7 +67,7 @@ export default {
               this.$router.push({ path: redirect })
               this.loading = false
             })
-            .catch(() => {
+            .catch(err => {
               this.loading = false
             })
         }

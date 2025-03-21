@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span class="welcome-title">欢迎回来! {{ username }}</span>
+    <span class="welcome-title">欢迎回来! {{ nickname }}</span>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'demo',
   computed: {
-    ...mapGetters(['username']),
+    ...mapGetters(['nickname']),
   },
 }
 </script>

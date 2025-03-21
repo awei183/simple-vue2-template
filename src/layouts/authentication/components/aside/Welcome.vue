@@ -13,9 +13,9 @@ const SUBFIX = '欢迎登录。'
 export default {
   name: 'Welcome',
   computed: {
-    ...mapGetters(['avatar', 'username']),
+    ...mapGetters(['avatar', 'nickname']),
     format() {
-      return `${PREFIX}${this.username},${SUBFIX}`
+      return `${PREFIX}${this.nickname},${SUBFIX}`
     },
   },
 }

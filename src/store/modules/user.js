@@ -1,110 +1,64 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import router, { resetRouter } from '@/router'
+import { resetRouter } from '@/router'
+import { createMutations } from '../helper'
 
 const state = {
   token: getToken(),
-  name: 'User',
+  username: 'user',
+  nickname: 'User',
   avatar: '/favicon.ico',
   roles: [],
   id: -1,
 }
 
-const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
-  },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
-  },
-  SET_ID: (state, id) => {
-    state.id = id
-  },
-  SET_ORIGIN: (state, origin) => {
-    state.origin = origin
-  },
-}
+const mutations = createMutations(state)
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
-    return new Promise((resolve, reject) => {
-      login(userInfo)
-        .then(response => {
-          const { data } = response
-          commit('SET_TOKEN', data.token)
-          setToken(data.token)
-          resolve()
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
+  async login({ commit }, userInfo) {
+    const response = await login(userInfo)
+    const { data: token } = response
+    commit('SET_TOKEN', token)
+    setToken(token)
+    return token
   },
 
   // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token)
-        .then(response => {
-          const { data } = response
+  async getInfo({ commit }) {
+    const response = await getInfo()
+    const { data } = response
 
-          if (!data) {
-            reject('Verification failed, please Login again.')
-          }
-
-          const { roles, userName, avatar, origin } = data
-
-          // roles must be a non-empty array
-          if (!roles || roles.length <= 0) {
-            reject('getInfo: roles must be a non-null array!')
-          }
-
-          commit('SET_ROLES', roles)
-          commit('SET_NAME', userName)
-          commit('SET_AVATAR', avatar)
-          commit('SET_ID', origin.id)
-          commit('SET_ORIGIN', origin)
-          resolve(data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
+    if (!data) {
+      throw new TypeError('Verification failed, please Login again.')
+    }
+    const { roles, username, nickname, avatar, id } = data
+    // roles must be a non-empty array
+    if (!roles || roles.length <= 0) {
+      throw new TypeError('me: roles must be a non-null array!')
+    }
+    commit('SET_ROLES', roles)
+    commit('SET_USERNAME', username)
+    commit('SET_NICKNAME', nickname)
+    commit('SET_AVATAR', avatar)
+    commit('SET_ID', id)
+    return data
   },
 
   // user logout
-  logout({ commit, state, dispatch }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token)
-        .then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
-          resetRouter()
-
-          resolve()
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
+  async logout({ commit }) {
+    await logout()
+    commit('SET_TOKEN', '')
+    commit('SET_ROLES', [])
+    removeToken()
+    resetRouter()
   },
 
   // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
-      removeToken()
-      resolve()
-    })
+  async resetToken({ commit }) {
+    commit('SET_TOKEN', '')
+    commit('SET_ROLES', [])
+    removeToken()
   },
 }
 
